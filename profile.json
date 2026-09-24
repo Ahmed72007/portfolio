@@ -1,0 +1,104 @@
+{
+  "basics": {
+    "name": "Ahmed Abdullah",
+    "shortName": "AA",
+    "label": "Software Development & AI Architect",
+    "headline": "I architect quality systems that give Development teams speed, confidence, and executive-level clarity.",
+    "summary": "Software Architect based in Karachi, Pakistan. I lead AI automation strategy across web, mobile, desktop, and API ecosystems, build durable frameworks from the ground up, and help organizations turn quality into a delivery advantage instead of a release bottleneck.",
+    "location": {
+      "country": "Pakistan",
+      "countryCode": "PK",
+      "region": "Karachi"
+    },
+    "email": "2622-4cs-047@agu.edu.pk",
+    "availability": "Currently leading quality architecture at GUTECH Incubation Center since August 2026.",
+    "leadershipNote": "Trusted by product and engineering leaders to bring structure, visibility, and dependable release confidence to complex delivery environments.",
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "ahmed-abdullah-jan",
+        "url": "https://www.linkedin.com/in/ahmed-abdullah-jan/",
+        "icon": "fa-brands fa-linkedin-in"
+      },
+      {
+        "network": "GitHub",
+        "username": "Ahmed72007",
+        "url": "https://github.com/Ahmed72007",
+        "icon": "fa-brands fa-github"
+      },
+      {
+        "network": "Stack Overflow",
+        "username": "Ahmed Abdullah",
+        "url": "https://stackoverflow.com/users/33152283/ahmed-abdullah",
+        "icon": "fa-brands fa-stack-overflow"
+      }
+    ]
+  },
+  "about": {
+    "intro": [
+      "My Matric and Intermediate background is in Computer Science, where I learned C++ for my Olevels, C++ for my Intermediate, and I've also learned Python independently."
+    ],
+    "strengths": [
+      "Core programming logic and concepts like OOP"
+    ]
+  },
+  "skills": [
+    {
+      "category": "Languages",
+      "items": [
+        "C",
+        "Python",
+        "C++"
+      ]
+    }
+  ],
+  "certificates": [
+    {
+      "name": "CS50's Introduction to Artificial Intelligence with Python",
+      "issuer": "Harvard school",
+      "url": "https://certificates.cs50.io/12a7dbe1-3b26-4db2-a28f-7cbf7e58c058.pdf?size=letter"
+},    {
+      "name": "CS50’s Introduction to Programming with Python (CS50P)",
+      "issuer": "Harvard school",
+      "url": "https://certificates.cs50.io/8fd7ae92-1068-4165-85e4-49e7b46be679.pdf?size=letter"
+    }
+  ],
+  "education": [{
+      "institution": "GUTECH",
+      "area": "Computer Science",
+      "studyType": "BSCS",
+      "startDate": "2026-01-01",
+      "endDate": "2030-12-01"
+    },
+    {
+      "institution": "Viceroy's",
+      "area": "Computer Science",
+      "studyType": "Alevels",
+      "startDate": "2024-01-01",
+      "endDate": "2026-12-01"
+    },
+    {
+      "institution": "Aces Academy",
+      "area": "Computer Science",
+      "studyType": "O levels",
+      "detailsLabel": "Core Courses",
+      "details": [
+        "Mathematics",
+        "Physics",
+        "Computer Science"
+      ],
+      "startDate": "2022-08-01",
+      "endDate": "2024-06-01"
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Fluent"
+    },
+    {
+      "language": "Urdu",
+      "fluency": "Native"
+    }
+  ]
+}

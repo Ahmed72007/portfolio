@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed Abdullah | Software Architect & CS Student</title>
+    <meta name="description" content="Ahmed Abdullah — Software Architect based in Karachi, Pakistan. Specializing in AI automation strategy, quality engineering, and full-stack development across web, mobile, desktop, and API ecosystems.">
+    <meta name="keywords" content="Ahmed Abdullah, Software Architect, Karachi, Pakistan, CS50, C++, Python, GUTECH">
+    <meta name="author" content="Ahmed Abdullah">
+    <meta property="og:title" content="Ahmed Abdullah | Software Architect">
+    <meta property="og:description" content="Portfolio of Ahmed Abdullah — Software Architect specializing in quality systems and AI automation.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <canvas id="particle-canvas"></canvas>
+    <div class="gradient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo" id="nav-logo">
+                <span class="logo-bracket">&lt;</span>AA<span class="logo-bracket">/&gt;</span>
+            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#about" data-nav="about">About</a></li>
+                <li><a href="#skills" data-nav="skills">Skills</a></li>
+                <li><a href="#education" data-nav="education">Education</a></li>
+                <li><a href="#certificates" data-nav="certificates">Certificates</a></li>
+                <li><a href="#languages" data-nav="languages">Languages</a></li>
+                <li><a href="#contact" data-nav="contact">Contact</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Nav Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section">
+            <div class="container hero-wrapper">
+                <div class="hero-content" id="hero-content">
+                    <!-- Dynamically rendered -->
+                </div>
+                <div class="hero-scroll-indicator">
+                    <span>Scroll to explore</span>
+                    <div class="scroll-arrow">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-user"></i> Introduction</span>
+                    <h2 class="section-title">About Me</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div id="about-content" class="about-grid">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-code"></i> Technologies</span>
+                    <h2 class="section-title">Tech Stack</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div id="skills-grid" class="skills-grid">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="section reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-graduation-cap"></i> Learning Journey</span>
+                    <h2 class="section-title">Education</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div id="education-timeline" class="timeline">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Certificates Section -->
+        <section id="certificates" class="section reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-award"></i> Achievements</span>
+                    <h2 class="section-title">Certifications</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div id="certificates-grid" class="certificates-grid">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Languages Section -->
+        <section id="languages" class="section reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-globe"></i> Communication</span>
+                    <h2 class="section-title">Languages</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div id="languages-grid" class="languages-grid">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-envelope"></i> Reach Out</span>
+                    <h2 class="section-title">Get In Touch</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div id="contact-content" class="contact-container">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-bracket">&lt;</span>AA<span class="logo-bracket">/&gt;</span>
+                </div>
+                <p>&copy; <span id="year"></span> Ahmed Abdullah. Crafted with <i class="fas fa-heart" style="color: #ef4444;"></i> and precision.</p>
+                <div class="footer-socials" id="footer-socials">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top" id="scroll-top" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="app.js"></script>
+</body>
+</html>
