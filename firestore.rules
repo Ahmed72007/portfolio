@@ -1,0 +1,63 @@
+rules_version = '2';
+
+// Blog security model
+//  - Anyone (signed in or not) can read posts whose status is "published".
+//  - Only the admin can read drafts, and only the admin can create, edit or delete.
+//  - Everything else in the database is closed.
+//
+// SETUP: replace REPLACE_WITH_ADMIN_UID with the UID of your admin account
+// (Firebase console → Authentication → Users). The same UID goes in storage.rules.
+// Alternatively give the account a custom claim { admin: true } with the Admin SDK.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && (request.auth.uid == 'REPLACE_WITH_ADMIN_UID'
+            || request.auth.token.admin == true);
+    }
+
+    function isOptionalString(v, max) {
+      return v is string && v.size() <= max;
+    }
+
+    function isValidPost(d) {
+      return d.keys().hasAll(['title', 'slug', 'status', 'content', 'tags', 'createdAt', 'updatedAt'])
+        && d.keys().hasOnly([
+             'title', 'slug', 'description', 'seoTitle', 'content', 'tags', 'status',
+             'coverUrl', 'coverPath', 'coverAlt', 'readingTime',
+             'createdAt', 'updatedAt', 'publishedAt'
+           ])
+        && d.title is string && d.title.size() > 0 && d.title.size() <= 200
+        && d.slug is string && d.slug.size() > 0 && d.slug.size() <= 120
+        && d.slug.matches('^[a-z0-9]+(-[a-z0-9]+)*$')
+        && d.status in ['draft', 'published']
+        && d.content is string && d.content.size() <= 800000
+        && d.tags is list && d.tags.size() <= 12
+        && isOptionalString(d.get('description', ''), 400)
+        && isOptionalString(d.get('seoTitle', ''), 120)
+        && isOptionalString(d.get('coverUrl', ''), 2000)
+        && isOptionalString(d.get('coverPath', ''), 500)
+        && isOptionalString(d.get('coverAlt', ''), 300)
+        && d.get('readingTime', 1) is int
+        && d.createdAt is timestamp
+        && d.updatedAt is timestamp
+        && (d.get('publishedAt', null) == null || d.publishedAt is timestamp)
+        // A published post must have a publish date (used for ordering the public list).
+        && (d.status == 'draft' || d.get('publishedAt', null) is timestamp);
+    }
+
+    match /posts/{postId} {
+      allow get, list: if resource.data.status == 'published' || isAdmin();
+      allow create: if isAdmin() && isValidPost(request.resource.data);
+      allow update: if isAdmin() && isValidPost(request.resource.data)
+                    && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    // Deny everything not matched above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

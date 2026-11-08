@@ -1,0 +1,27 @@
+{
+  "name": "ahmed-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tiptap/core": "^3.33.0",
+    "@tiptap/extension-code-block-lowlight": "^3.33.0",
+    "@tiptap/extension-image": "^3.33.0",
+    "@tiptap/extension-youtube": "^3.33.0",
+    "@tiptap/extensions": "^3.33.0",
+    "@tiptap/pm": "^3.33.0",
+    "@tiptap/starter-kit": "^3.33.0",
+    "dompurify": "^3.4.17",
+    "firebase": "^13.2.0",
+    "highlight.js": "^11.12.0",
+    "lowlight": "^3.3.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.6"
+  }
+}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Admin | Ahmed Abdullah</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="blog-page admin-page">
+    <div class="gradient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-bracket">&lt;</span>AA<span class="logo-bracket">/&gt;</span>
+                <span class="admin-badge">admin</span>
+            </a>
+            <div class="admin-nav">
+                <a href="/blog/" class="admin-nav-link" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i><span> View blog</span></a>
+                <button type="button" class="admin-nav-link" id="signout" hidden><i class="fas fa-right-from-bracket"></i><span> Sign out</span></button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div class="container">
+            <!-- Loading -->
+            <div id="view-loading" class="admin-center"><div class="spinner" aria-label="Loading"></div></div>
+
+            <!-- Login -->
+            <section id="view-login" class="admin-center" hidden>
+                <form class="glass-card login-card" id="login-form">
+                    <span class="section-tag"><i class="fas fa-lock"></i> Restricted</span>
+                    <h1>Admin sign in</h1>
+                    <label class="field">
+                        <span>Email</span>
+                        <input type="email" id="login-email" autocomplete="username" required>
+                    </label>
+                    <label class="field">
+                        <span>Password</span>
+                        <input type="password" id="login-password" autocomplete="current-password" required>
+                    </label>
+                    <p class="form-error" id="login-error" role="alert"></p>
+                    <button type="submit" class="btn btn-primary btn-block" id="login-submit">
+                        <i class="fas fa-right-to-bracket"></i> Sign in
+                    </button>
+                </form>
+            </section>
+
+            <!-- Dashboard -->
+            <section id="view-dashboard" hidden>
+                <div class="admin-head">
+                    <div>
+                        <h1 class="admin-title">Posts</h1>
+                        <p class="admin-sub" id="post-count"></p>
+                    </div>
+                    <a href="#/new" class="btn btn-primary"><i class="fas fa-plus"></i> New post</a>
+                </div>
+                <div class="admin-tabs" id="status-tabs">
+                    <button type="button" class="tag-chip active" data-filter="all">All</button>
+                    <button type="button" class="tag-chip" data-filter="published">Published</button>
+                    <button type="button" class="tag-chip" data-filter="draft">Drafts</button>
+                </div>
+                <div class="admin-list" id="admin-list"></div>
+            </section>
+
+            <!-- Editor -->
+            <section id="view-editor" hidden>
+                <div class="admin-head">
+                    <a href="#/" class="back-link"><i class="fas fa-arrow-left"></i> All posts</a>
+                    <div class="editor-actions">
+                        <span class="save-state" id="save-state"></span>
+                        <a class="btn btn-ghost btn-sm" id="btn-preview" target="_blank" rel="noopener" hidden><i class="fas fa-eye"></i> Preview</a>
+                        <button type="button" class="btn btn-ghost btn-sm" id="btn-save-draft"><i class="fas fa-floppy-disk"></i> Save draft</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btn-publish"><i class="fas fa-paper-plane"></i> Publish</button>
+                    </div>
+                </div>
+
+                <div class="editor-layout">
+                    <div class="editor-main">
+                        <textarea id="f-title" class="title-input" rows="1" placeholder="Post title" maxlength="200" aria-label="Title"></textarea>
+                        <div class="editor-shell glass-card">
+                            <div class="editor-toolbar" id="toolbar" role="toolbar" aria-label="Formatting"></div>
+                            <div id="editor" class="prose editor-content"></div>
+                        </div>
+                        <p class="editor-hint">Tip: paste a YouTube link to embed it. Type <code>```</code> + space for a code block, <code>##</code> + space for a heading, <code>&gt;</code> + space for a quote.</p>
+                    </div>
+
+                    <aside class="editor-side">
+                        <div class="glass-card side-card">
+                            <h2>Status</h2>
+                            <p class="status-line"><span class="status-pill" id="status-pill">Draft</span> <span id="reading-time" class="muted"></span></p>
+                            <button type="button" class="btn btn-ghost btn-sm btn-block" id="btn-unpublish" hidden><i class="fas fa-eye-slash"></i> Unpublish (back to draft)</button>
+                        </div>
+
+                        <div class="glass-card side-card">
+                            <h2>Cover image</h2>
+                            <div class="cover-drop" id="cover-drop" tabindex="0" role="button" aria-label="Upload cover image">
+                                <img id="cover-preview" alt="" hidden>
+                                <div class="cover-empty" id="cover-empty">
+                                    <i class="fas fa-image"></i>
+                                    <span>Drop an image or click to upload</span>
+                                </div>
+                                <div class="upload-bar" id="cover-progress" hidden><span></span></div>
+                            </div>
+                            <input type="file" id="cover-file" accept="image/png,image/jpeg,image/gif,image/webp,image/avif" hidden>
+                            <div class="cover-buttons">
+                                <button type="button" class="btn btn-ghost btn-sm" id="cover-url-btn"><i class="fas fa-link"></i> Use URL</button>
+                                <button type="button" class="btn btn-ghost btn-sm" id="cover-remove" hidden><i class="fas fa-trash"></i> Remove</button>
+                            </div>
+                            <label class="field">
+                                <span>Alt text</span>
+                                <input type="text" id="f-cover-alt" maxlength="300" placeholder="Describe the image">
+                            </label>
+                        </div>
+
+                        <div class="glass-card side-card">
+                            <h2>URL &amp; SEO</h2>
+                            <label class="field">
+                                <span>Slug</span>
+                                <span class="slug-input"><span>/blog/</span><input type="text" id="f-slug" maxlength="120" placeholder="my-post" spellcheck="false"></span>
+                                <small class="field-error" id="slug-error"></small>
+                            </label>
+                            <label class="field">
+                                <span>Description <small class="counter" id="desc-count">0/160</small></span>
+                                <textarea id="f-description" rows="3" maxlength="400" placeholder="Shown in search results, social previews and the post list."></textarea>
+                            </label>
+                            <label class="field">
+                                <span>SEO title <small class="muted">(optional)</small></span>
+                                <input type="text" id="f-seo-title" maxlength="120" placeholder="Defaults to the post title">
+                            </label>
+                            <div class="serp-preview" id="serp-preview" aria-label="Search result preview">
+                                <span class="serp-url"></span>
+                                <span class="serp-title"></span>
+                                <span class="serp-desc"></span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card side-card">
+                            <h2>Tags</h2>
+                            <div class="tag-input" id="tag-input">
+                                <input type="text" id="f-tag" placeholder="Add tag, press Enter" maxlength="30" aria-label="Add tag">
+                            </div>
+                            <small class="muted">Up to 12 tags.</small>
+                        </div>
+
+                        <button type="button" class="btn btn-danger btn-sm btn-block" id="btn-delete" hidden><i class="fas fa-trash"></i> Delete post</button>
+                    </aside>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal used for links, images and videos -->
+    <dialog class="modal" id="modal">
+        <form method="dialog" id="modal-form" class="glass-card">
+            <h2 id="modal-title"></h2>
+            <div id="modal-fields"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost btn-sm" id="modal-cancel">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm">OK</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/admin.js"></script>
+</body>
+</html>

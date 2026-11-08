@@ -1,0 +1,27 @@
+rules_version = '2';
+
+// Blog images: public read, admin-only write.
+// SETUP: replace REPLACE_WITH_ADMIN_UID with the same UID used in firestore.rules.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null
+        && (request.auth.uid == 'REPLACE_WITH_ADMIN_UID'
+            || request.auth.token.admin == true);
+    }
+
+    match /blog/{allPaths=**} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(png|jpe?g|gif|webp|avif)');
+      allow delete: if isAdmin();
+    }
+
+    // Deny everything else.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

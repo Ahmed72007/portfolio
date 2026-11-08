@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ahmed Abdullah">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Blog | Ahmed Abdullah</title>
+    <meta name="description" content="Articles by Ahmed Abdullah on software architecture, AI automation, quality engineering and full-stack development.">
+    <meta property="og:title" content="Blog | Ahmed Abdullah">
+    <meta property="og:description" content="Articles on software architecture, AI automation, quality engineering and full-stack development.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+</head>
+<body class="blog-page">
+    <div class="gradient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-bracket">&lt;</span>AA<span class="logo-bracket">/&gt;</span>
+            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#skills">Skills</a></li>
+                <li><a href="/#education">Education</a></li>
+                <li><a href="/#certificates">Certificates</a></li>
+                <li><a href="/blog/" class="active">Blog</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <main>
+        <section class="section blog-hero">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-pen-nib"></i> Writing</span>
+                    <h1 class="section-title">Blog</h1>
+                    <div class="section-line"></div>
+                    <p class="blog-intro">Notes on software architecture, AI automation, quality engineering and the things I build.</p>
+                </div>
+
+                <div class="blog-toolbar">
+                    <label class="search-box">
+                        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="search" id="search" placeholder="Search posts…" autocomplete="off" aria-label="Search posts">
+                    </label>
+                    <div class="tag-filter" id="tag-filter" role="toolbar" aria-label="Filter by tag"></div>
+                </div>
+
+                <p class="blog-status" id="blog-status" role="status"></p>
+                <div class="post-grid" id="post-grid" aria-live="polite"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-bracket">&lt;</span>AA<span class="logo-bracket">/&gt;</span>
+                </div>
+                <p>&copy; <span id="year"></span> Ahmed Abdullah. Crafted with <i class="fas fa-heart" style="color: #ef4444;"></i> and precision.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script type="module" src="/src/blog-list.js"></script>
+</body>
+</html>
