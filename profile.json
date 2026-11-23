@@ -31,7 +31,29 @@
         "username": "Ahmed Abdullah",
         "url": "https://stackoverflow.com/users/33152283/ahmed-abdullah",
         "icon": "fa-brands fa-stack-overflow"
+      },
+      {
+        "network": "Codeforces",
+        "username": "AhmedCodzz",
+        "url": "https://codeforces.com/profile/AhmedCodzz",
+        "icon": "fas fa-chart-column"
       }
+    ]
+  },
+  "codeforces": {
+    "handle": "AhmedCodzz",
+    "url": "https://codeforces.com/profile/AhmedCodzz"
+  },
+  "resume": {
+    "file": "/resume/Ahmed-Abdullah-Resume.pdf",
+    "downloadName": "Ahmed-Abdullah-Resume.pdf",
+    "summary": "Computer Science student at GUTECH with a focus on software architecture, AI automation strategy, and quality engineering. Builds full-stack solutions across web, mobile, desktop, and API ecosystems.",
+    "highlights": [
+      { "label": "Education", "icon": "fas fa-graduation-cap", "value": "BS Computer Science, GUTECH (Ghazali University School of Technology), Karachi" },
+      { "label": "Technology", "icon": "fas fa-code", "value": "Python, C++, Full-Stack Web Development, API Development" },
+      { "label": "Focus Areas", "icon": "fas fa-bullseye", "value": "Software Architecture, AI Automation Strategy, Quality Engineering" },
+      { "label": "Platforms", "icon": "fas fa-layer-group", "value": "Web, Mobile, Desktop, API Ecosystems" },
+      { "label": "Languages", "icon": "fas fa-language", "value": "English, Urdu" }
     ]
   },
   "about": {
@@ -106,17 +128,17 @@
     },
     {
       "name": "Hospital Guide",
-      "tagline": "Installable hospital guide app for patients and visitors",
+      "tagline": "Helps patients and visitors find their way around a hospital",
       "category": "Health",
       "icon": "fas fa-hospital",
       "url": "https://hospitalapp-seven.vercel.app",
       "accent": ["#0f766e", "#14b8a6"],
       "badge": "PWA",
-      "summary": "A mobile-first hospital guide built as a Progressive Web App, so it can be installed on a phone's home screen and opened like a native app.",
+      "summary": "A mobile-friendly hospital navigation app that helps visitors and patients find their way around a hospital. It is a Progressive Web App, so it can be installed on a phone like a native app.",
       "features": [
+        "Hospital navigation for patients and visitors",
         "Installable Progressive Web App with its own icon",
-        "Opens full-screen like a native mobile app",
-        "Mobile-first design",
+        "Mobile-first design that opens full-screen like a native app",
         "Built with React and Vite"
       ],
       "tech": ["React", "Vite", "PWA", "JavaScript"]

@@ -37,7 +37,29 @@ const PROFILE_DATA = {
         "username": "Ahmed Abdullah",
         "url": "https://stackoverflow.com/users/33152283/ahmed-abdullah",
         "icon": "fa-brands fa-stack-overflow"
+      },
+      {
+        "network": "Codeforces",
+        "username": "AhmedCodzz",
+        "url": "https://codeforces.com/profile/AhmedCodzz",
+        "icon": "fas fa-chart-column"
       }
+    ]
+  },
+  "codeforces": {
+    "handle": "AhmedCodzz",
+    "url": "https://codeforces.com/profile/AhmedCodzz"
+  },
+  "resume": {
+    "file": "/resume/Ahmed-Abdullah-Resume.pdf",
+    "downloadName": "Ahmed-Abdullah-Resume.pdf",
+    "summary": "Computer Science student at GUTECH with a focus on software architecture, AI automation strategy, and quality engineering. Builds full-stack solutions across web, mobile, desktop, and API ecosystems.",
+    "highlights": [
+      { "label": "Education", "icon": "fas fa-graduation-cap", "value": "BS Computer Science, GUTECH (Ghazali University School of Technology), Karachi" },
+      { "label": "Technology", "icon": "fas fa-code", "value": "Python, C++, Full-Stack Web Development, API Development" },
+      { "label": "Focus Areas", "icon": "fas fa-bullseye", "value": "Software Architecture, AI Automation Strategy, Quality Engineering" },
+      { "label": "Platforms", "icon": "fas fa-layer-group", "value": "Web, Mobile, Desktop, API Ecosystems" },
+      { "label": "Languages", "icon": "fas fa-language", "value": "English, Urdu" }
     ]
   },
   "about": {
@@ -112,17 +134,17 @@ const PROFILE_DATA = {
     },
     {
       "name": "Hospital Guide",
-      "tagline": "Installable hospital guide app for patients and visitors",
+      "tagline": "Helps patients and visitors find their way around a hospital",
       "category": "Health",
       "icon": "fas fa-hospital",
       "url": "https://hospitalapp-seven.vercel.app",
       "accent": ["#0f766e", "#14b8a6"],
       "badge": "PWA",
-      "summary": "A mobile-first hospital guide built as a Progressive Web App, so it can be installed on a phone's home screen and opened like a native app.",
+      "summary": "A mobile-friendly hospital navigation app that helps visitors and patients find their way around a hospital. It is a Progressive Web App, so it can be installed on a phone like a native app.",
       "features": [
+        "Hospital navigation for patients and visitors",
         "Installable Progressive Web App with its own icon",
-        "Opens full-screen like a native mobile app",
-        "Mobile-first design",
+        "Mobile-first design that opens full-screen like a native app",
         "Built with React and Vite"
       ],
       "tech": ["React", "Vite", "PWA", "JavaScript"]
@@ -217,9 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAbout(data.about, data.basics);
     renderSkills(data.skills);
     renderProjects(data.projects);
+    renderCodeforces(data.codeforces);
     renderEducation(data.education);
     renderCertificates(data.certificates);
     renderLanguages(data.languages);
+    renderResume(data.resume);
     renderContact(data.basics);
     renderFooterSocials(data.basics);
 
@@ -432,6 +456,9 @@ function renderHero(basics) {
             </a>
             <a href="${githubUrl}" target="_blank" rel="noopener" class="btn btn-ghost" id="hero-cta-github">
                 <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="#resume" class="btn btn-ghost" id="hero-cta-resume">
+                <i class="fas fa-file-arrow-down"></i> Resume
             </a>
         </div>
     `;
@@ -758,6 +785,412 @@ function renderProjects(projects) {
     modal.addEventListener('close', () => {
         document.body.style.overflow = '';
         modalInner.innerHTML = '';
+    });
+}
+
+
+/* ═══════════════════════════════════════════════
+   RENDER: CODEFORCES (live from the public API)
+   ═══════════════════════════════════════════════ */
+const CF_BANDS = [
+    [-Infinity, 1200, 'newbie', '#9ca3af'],
+    [1200, 1400, 'pupil', '#4ade80'],
+    [1400, 1600, 'specialist', '#2dd4bf'],
+    [1600, 1900, 'expert', '#60a5fa'],
+    [1900, 2100, 'candidate master', '#c084fc'],
+    [2100, 2300, 'master', '#fb923c'],
+    [2300, 2400, 'international master', '#fb923c'],
+    [2400, 2600, 'grandmaster', '#f87171'],
+    [2600, 3000, 'international grandmaster', '#f87171'],
+    [3000, Infinity, 'legendary grandmaster', '#ef4444'],
+];
+const cfColor = (rating) => rating == null ? '#94a3b8' : CF_BANDS.find(([lo, hi]) => rating >= lo && rating < hi)[3];
+const cfDate = (sec) => new Date(sec * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+const CF_CACHE_MS = 30 * 60 * 1000;
+
+async function cfApi(method, params) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
+    try {
+        const res = await fetch(`https://codeforces.com/api/${method}?${new URLSearchParams(params)}`, { signal: ctrl.signal });
+        const json = await res.json();
+        if (json.status !== 'OK') throw new Error(json.comment || 'Codeforces API error');
+        return json.result;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+// Reduce the raw API responses to the few numbers the section shows.
+function cfSummarize(info, rating, status) {
+    const solved = new Map();
+    let accepted = 0;
+    for (const s of status || []) {
+        if (s.verdict !== 'OK') continue;
+        accepted++;
+        const p = s.problem;
+        const key = `${p.contestId ?? p.problemsetName}-${p.index}`;
+        if (!solved.has(key)) solved.set(key, { ...p, time: s.creationTimeSeconds });
+    }
+    const tags = {};
+    const levels = {};
+    for (const p of solved.values()) {
+        (p.tags || []).forEach(t => { tags[t] = (tags[t] || 0) + 1; });
+        const lvl = p.rating ? (p.rating < 1000 ? '800–900' : `${Math.floor(p.rating / 100) * 100}`) : 'Unrated';
+        levels[lvl] = (levels[lvl] || 0) + 1;
+    }
+    const recent = [...solved.values()].sort((a, b) => b.time - a.time).slice(0, 6).map(p => ({
+        name: p.name, index: p.index, rating: p.rating, contestId: p.contestId, time: p.time,
+    }));
+    return {
+        info: {
+            handle: info.handle, rating: info.rating, maxRating: info.maxRating, rank: info.rank, maxRank: info.maxRank,
+            avatar: info.titlePhoto, registered: info.registrationTimeSeconds, contribution: info.contribution,
+            friends: info.friendOfCount, organization: info.organization,
+        },
+        contests: (rating || []).map(r => ({
+            name: r.contestName, id: r.contestId, rank: r.rank, oldRating: r.oldRating, newRating: r.newRating, time: r.ratingUpdateTimeSeconds,
+        })),
+        solvedCount: solved.size,
+        submissions: (status || []).length,
+        accepted,
+        tags: Object.entries(tags).sort((a, b) => b[1] - a[1]).slice(0, 8),
+        levels: Object.entries(levels).sort((a, b) => (parseInt(a[0]) || 9999) - (parseInt(b[0]) || 9999)),
+        recent,
+    };
+}
+
+async function loadCodeforces(handle) {
+    const key = `cf-stats:${handle}`;
+    try {
+        const cached = JSON.parse(localStorage.getItem(key) || 'null');
+        if (cached && Date.now() - cached.at < CF_CACHE_MS) return cached.data;
+    } catch { /* storage unavailable */ }
+
+    const [info, rating, status] = await Promise.allSettled([
+        cfApi('user.info', { handles: handle }),
+        cfApi('user.rating', { handle }),
+        cfApi('user.status', { handle, from: 1, count: 10000 }),
+    ]);
+    if (info.status !== 'fulfilled') throw info.reason;
+    const data = cfSummarize(
+        info.value[0],
+        rating.status === 'fulfilled' ? rating.value : [],
+        status.status === 'fulfilled' ? status.value : [],
+    );
+    try { localStorage.setItem(key, JSON.stringify({ at: Date.now(), data })); } catch { /* ignore */ }
+    return data;
+}
+
+function cfChart(contests) {
+    if (!contests.length) {
+        return `<div class="cf-chart-empty"><i class="fas fa-flag-checkered"></i><p>No rated contests yet. The rating graph appears after the first rated contest.</p></div>`;
+    }
+    const W = 720, H = 280, L = 46, R = 14, T = 14, B = 30;
+    const ratings = contests.flatMap(c => [c.oldRating, c.newRating]);
+    let lo = Math.floor((Math.min(...ratings) - 100) / 100) * 100;
+    let hi = Math.ceil((Math.max(...ratings) + 100) / 100) * 100;
+    if (hi - lo < 400) { const mid = (hi + lo) / 2; lo = Math.floor((mid - 200) / 100) * 100; hi = lo + 400; }
+    const t0 = contests[0].time, t1 = contests[contests.length - 1].time;
+    const x = (t) => contests.length === 1 ? (L + W - R) / 2 : L + ((t - t0) / (t1 - t0)) * (W - L - R);
+    const y = (r) => T + (1 - (r - lo) / (hi - lo)) * (H - T - B);
+
+    const bands = CF_BANDS.filter(([a, b]) => b > lo && a < hi).map(([a, b, , color]) => {
+        const top = y(Math.min(b, hi)), bot = y(Math.max(a, lo));
+        return `<rect x="${L}" y="${top}" width="${W - L - R}" height="${bot - top}" fill="${color}" opacity="0.09"/>`;
+    }).join('');
+    const step = (hi - lo) > 1200 ? 400 : (hi - lo) > 600 ? 200 : 100;
+    let grid = '';
+    for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
+        grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" class="cf-grid"/><text x="${L - 8}" y="${y(v) + 4}" class="cf-axis" text-anchor="end">${v}</text>`;
+    }
+    const pts = contests.map(c => [x(c.time), y(c.newRating)]);
+    const path = pts.map(([px, py], i) => `${i ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)}`).join(' ');
+    const area = `${path} L${pts[pts.length - 1][0].toFixed(1)},${H - B} L${pts[0][0].toFixed(1)},${H - B} Z`;
+    const first = new Date(t0 * 1000).getFullYear(), last = new Date(t1 * 1000).getFullYear();
+
+    return `
+        <div class="cf-chart" id="cf-chart">
+            <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Codeforces rating over ${contests.length} contests">
+                <defs>
+                    <linearGradient id="cf-area" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.35"/>
+                        <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                ${bands}${grid}
+                <path d="${area}" fill="url(#cf-area)"/>
+                <path d="${path}" class="cf-line"/>
+                ${pts.map(([px, py], i) => `<circle cx="${px}" cy="${py}" r="4.5" class="cf-dot" data-i="${i}" fill="${cfColor(contests[i].newRating)}"/>`).join('')}
+                <line class="cf-cursor" id="cf-cursor" x1="0" x2="0" y1="${T}" y2="${H - B}"/>
+                <text x="${L}" y="${H - 8}" class="cf-axis">${first}</text>
+                <text x="${W - R}" y="${H - 8}" class="cf-axis" text-anchor="end">${last}</text>
+            </svg>
+            <div class="cf-tip" id="cf-tip" hidden></div>
+        </div>`;
+}
+
+function wireCfChart(contests) {
+    const wrap = document.getElementById('cf-chart');
+    if (!wrap) return;
+    const svg = wrap.querySelector('svg');
+    const tip = document.getElementById('cf-tip');
+    const cursor = document.getElementById('cf-cursor');
+    const dots = [...svg.querySelectorAll('.cf-dot')];
+    const show = (i) => {
+        const c = contests[i];
+        const d = c.newRating - c.oldRating;
+        const dot = dots[i];
+        dots.forEach((el, k) => el.classList.toggle('active', k === i));
+        const cx = +dot.getAttribute('cx'), cy = +dot.getAttribute('cy');
+        cursor.setAttribute('x1', cx); cursor.setAttribute('x2', cx); cursor.classList.add('on');
+        tip.innerHTML = `
+            <strong>${escapeHtml(c.name)}</strong>
+            <span>${cfDate(c.time)} · Rank #${c.rank.toLocaleString()}</span>
+            <span class="cf-tip-rating" style="color:${cfColor(c.newRating)}">${c.newRating}
+                <em class="${d >= 0 ? 'up' : 'down'}">${d >= 0 ? '+' : ''}${d}</em></span>`;
+        tip.hidden = false;
+        const box = svg.getBoundingClientRect();
+        const scale = box.width / svg.viewBox.baseVal.width;
+        const left = Math.min(Math.max(cx * scale, 90), box.width - 90);
+        tip.style.left = `${left}px`;
+        tip.style.top = `${cy * scale}px`;
+    };
+    const hide = () => { tip.hidden = true; cursor.classList.remove('on'); dots.forEach(el => el.classList.remove('active')); };
+    svg.addEventListener('pointermove', (e) => {
+        const box = svg.getBoundingClientRect();
+        const vx = (e.clientX - box.left) / box.width * svg.viewBox.baseVal.width;
+        let best = 0;
+        dots.forEach((el, i) => { if (Math.abs(+el.getAttribute('cx') - vx) < Math.abs(+dots[best].getAttribute('cx') - vx)) best = i; });
+        show(best);
+    });
+    svg.addEventListener('pointerleave', hide);
+    show(contests.length - 1);
+}
+
+function renderCodeforces(cf) {
+    const section = document.getElementById('codeforces');
+    const root = document.getElementById('cf-content');
+    if (!cf || !cf.handle) {
+        if (section) section.style.display = 'none';
+        return;
+    }
+    const profileUrl = cf.url || `https://codeforces.com/profile/${encodeURIComponent(cf.handle)}`;
+
+    root.innerHTML = `
+        <div class="glass-card cf-loading">
+            <div class="cf-skel avatar"></div>
+            <div class="cf-skel-lines"><div class="cf-skel"></div><div class="cf-skel short"></div></div>
+            <span class="cf-loading-text"><i class="fas fa-circle-notch fa-spin"></i> Loading live stats…</span>
+        </div>`;
+
+    const fallback = () => {
+        root.innerHTML = `
+            <div class="glass-card cf-fallback">
+                <div class="cf-fallback-icon"><i class="fas fa-chart-column"></i></div>
+                <div>
+                    <h3>@${escapeHtml(cf.handle)}</h3>
+                    <p>Live stats couldn't load right now. See my contests, rating and solved problems on Codeforces.</p>
+                </div>
+                <a class="btn btn-primary" href="${escapeHtml(profileUrl)}" target="_blank" rel="noopener">
+                    <i class="fas fa-arrow-up-right-from-square"></i> View profile
+                </a>
+            </div>`;
+    };
+
+    // Fetch only when the section is about to scroll into view.
+    const start = () => loadCodeforces(cf.handle).then(d => paint(d)).catch(fallback);
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+            if (entries.some(e => e.isIntersecting)) { io.disconnect(); start(); }
+        }, { rootMargin: '400px 0px' });
+        io.observe(section);
+    } else {
+        start();
+    }
+
+    function paint(d) {
+        const i = d.info;
+        const color = cfColor(i.rating);
+        const rankName = i.rank || 'unrated';
+        const tagMax = d.tags[0]?.[1] || 1;
+        const levelMax = Math.max(1, ...d.levels.map(l => l[1]));
+        const lastContest = d.contests[d.contests.length - 1];
+        const lastDelta = lastContest ? lastContest.newRating - lastContest.oldRating : null;
+
+        root.innerHTML = `
+            <div class="glass-card cf-profile" style="--rank:${color}">
+                <div class="cf-avatar">
+                    ${i.avatar ? `<img src="${escapeHtml(i.avatar)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+                    <i class="fas fa-user" aria-hidden="true"></i>
+                </div>
+                <div class="cf-id">
+                    <span class="cf-rank">${escapeHtml(rankName)}</span>
+                    <h3 class="cf-handle">${escapeHtml(i.handle)}</h3>
+                    <p class="cf-meta">
+                        ${i.registered ? `<span><i class="fas fa-calendar"></i> Member since ${new Date(i.registered * 1000).getFullYear()}</span>` : ''}
+                        ${i.organization ? `<span><i class="fas fa-building"></i> ${escapeHtml(i.organization)}</span>` : ''}
+                    </p>
+                </div>
+                <a class="btn btn-primary cf-visit" href="${escapeHtml(profileUrl)}" target="_blank" rel="noopener">
+                    <i class="fas fa-arrow-up-right-from-square"></i> View on Codeforces
+                </a>
+            </div>
+
+            <div class="cf-stats stagger-in">
+                <div class="glass-card cf-stat">
+                    <span class="cf-stat-label">Rating</span>
+                    <span class="cf-stat-value" style="color:${color}" data-count="${i.rating ?? ''}">${i.rating ?? '—'}</span>
+                    <span class="cf-stat-sub">${lastDelta == null ? 'Unrated' : `<em class="${lastDelta >= 0 ? 'up' : 'down'}">${lastDelta >= 0 ? '▲ +' : '▼ '}${lastDelta}</em> last contest`}</span>
+                </div>
+                <div class="glass-card cf-stat">
+                    <span class="cf-stat-label">Max rating</span>
+                    <span class="cf-stat-value" style="color:${cfColor(i.maxRating)}" data-count="${i.maxRating ?? ''}">${i.maxRating ?? '—'}</span>
+                    <span class="cf-stat-sub cap">${escapeHtml(i.maxRank || '—')}</span>
+                </div>
+                <div class="glass-card cf-stat">
+                    <span class="cf-stat-label">Contests</span>
+                    <span class="cf-stat-value" data-count="${d.contests.length}">${d.contests.length}</span>
+                    <span class="cf-stat-sub">rated rounds</span>
+                </div>
+                <div class="glass-card cf-stat">
+                    <span class="cf-stat-label">Problems solved</span>
+                    <span class="cf-stat-value" data-count="${d.solvedCount}">${d.solvedCount}</span>
+                    <span class="cf-stat-sub">${d.accepted} accepted of ${d.submissions} submissions</span>
+                </div>
+            </div>
+
+            <div class="cf-grid-2">
+                <div class="glass-card cf-panel cf-panel-chart">
+                    <div class="cf-panel-head"><h4><i class="fas fa-chart-line"></i> Rating history</h4><span>hover the graph</span></div>
+                    ${cfChart(d.contests)}
+                </div>
+                <div class="glass-card cf-panel">
+                    <div class="cf-panel-head">
+                        <h4><i class="fas fa-tags"></i> Solved by</h4>
+                        <div class="cf-toggle" role="group" aria-label="Group solved problems by">
+                            <button class="active" data-view="tags" aria-pressed="true">Topic</button>
+                            <button data-view="levels" aria-pressed="false">Difficulty</button>
+                        </div>
+                    </div>
+                    <div class="cf-bars" data-panel="tags">
+                        ${d.tags.length ? d.tags.map(([t, n]) => `
+                            <div class="cf-bar"><span class="cf-bar-label">${escapeHtml(t)}</span>
+                                <span class="cf-bar-track"><span class="cf-bar-fill" style="--w:${(n / tagMax) * 100}%"></span></span>
+                                <span class="cf-bar-n">${n}</span></div>`).join('') : '<p class="cf-none">No solved problems yet.</p>'}
+                    </div>
+                    <div class="cf-bars" data-panel="levels" hidden>
+                        ${d.levels.length ? d.levels.map(([l, n]) => `
+                            <div class="cf-bar"><span class="cf-bar-label">${escapeHtml(l)}</span>
+                                <span class="cf-bar-track"><span class="cf-bar-fill" style="--w:${(n / levelMax) * 100}%;--c:${cfColor(parseInt(l) || null)}"></span></span>
+                                <span class="cf-bar-n">${n}</span></div>`).join('') : '<p class="cf-none">No solved problems yet.</p>'}
+                    </div>
+                </div>
+            </div>
+
+            ${d.recent.length ? `
+            <div class="glass-card cf-panel">
+                <div class="cf-panel-head"><h4><i class="fas fa-bolt"></i> Recently solved</h4></div>
+                <ul class="cf-recent">
+                    ${d.recent.map(p => `
+                        <li><a href="https://codeforces.com/problemset/problem/${p.contestId}/${encodeURIComponent(p.index)}" target="_blank" rel="noopener">
+                            <span class="cf-pid">${p.contestId ?? ''}${escapeHtml(p.index)}</span>
+                            <span class="cf-pname">${escapeHtml(p.name)}</span>
+                            ${p.rating ? `<span class="cf-prating" style="color:${cfColor(p.rating)}">${p.rating}</span>` : ''}
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </a></li>`).join('')}
+                </ul>
+            </div>` : ''}
+        `;
+
+        wireCfChart(d.contests);
+
+        // Topic / difficulty toggle.
+        const toggle = root.querySelector('.cf-toggle');
+        toggle?.addEventListener('click', (e) => {
+            const b = e.target.closest('button');
+            if (!b) return;
+            toggle.querySelectorAll('button').forEach(x => { x.classList.toggle('active', x === b); x.setAttribute('aria-pressed', x === b); });
+            root.querySelectorAll('.cf-bars').forEach(p => { p.hidden = p.dataset.panel !== b.dataset.view; });
+        });
+
+        // Count-up numbers and grow bars.
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        root.querySelectorAll('[data-count]').forEach(el => {
+            const end = parseInt(el.dataset.count, 10);
+            if (!Number.isFinite(end) || reduce) return;
+            const t0 = performance.now();
+            const tick = (now) => {
+                const k = Math.min(1, (now - t0) / 900);
+                el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3)));
+                if (k < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        });
+        requestAnimationFrame(() => {
+            root.classList.add('cf-ready');
+            root.querySelector('.cf-stats')?.classList.add('active');
+        });
+    }
+}
+
+
+/* ═══════════════════════════════════════════════
+   RENDER: RESUME
+   ═══════════════════════════════════════════════ */
+function renderResume(resume) {
+    const section = document.getElementById('resume');
+    const root = document.getElementById('resume-content');
+    if (!resume || !resume.file) {
+        if (section) section.style.display = 'none';
+        return;
+    }
+    root.innerHTML = `
+        <div class="glass-card resume-card">
+            <div class="resume-doc" aria-hidden="true">
+                <div class="resume-doc-page">
+                    <span class="l w60"></span><span class="l w40 accent"></span>
+                    <span class="l w90 gap"></span><span class="l w80"></span><span class="l w85"></span>
+                    <span class="l w30 accent gap"></span><span class="l w75"></span><span class="l w65"></span>
+                    <span class="l w30 accent gap"></span><span class="l w80"></span><span class="l w70"></span>
+                </div>
+                <span class="resume-doc-badge"><i class="fas fa-file-pdf"></i> PDF</span>
+            </div>
+            <div class="resume-info">
+                <p class="resume-summary">${escapeHtml(resume.summary)}</p>
+                <ul class="resume-highlights">
+                    ${(resume.highlights || []).map(h => `
+                        <li><span class="resume-hl-icon"><i class="${escapeHtml(h.icon)}"></i></span>
+                            <span><strong>${escapeHtml(h.label)}</strong>${escapeHtml(h.value)}</span></li>`).join('')}
+                </ul>
+                <div class="resume-actions">
+                    <a class="btn btn-primary" href="${escapeHtml(resume.file)}" download="${escapeHtml(resume.downloadName || 'resume.pdf')}">
+                        <i class="fas fa-file-arrow-down"></i> Download resume
+                    </a>
+                    <a class="btn btn-ghost" href="${escapeHtml(resume.file)}" target="_blank" rel="noopener">
+                        <i class="fas fa-up-right-from-square"></i> Open in new tab
+                    </a>
+                    <button class="btn btn-ghost" id="resume-preview-btn" aria-expanded="false" aria-controls="resume-preview">
+                        <i class="fas fa-eye"></i> <span>Preview</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="resume-preview" id="resume-preview" hidden></div>`;
+
+    const btn = document.getElementById('resume-preview-btn');
+    const preview = document.getElementById('resume-preview');
+    btn.addEventListener('click', () => {
+        const open = preview.hidden;
+        if (open && !preview.firstChild) {
+            preview.innerHTML = `
+                <iframe src="${escapeHtml(resume.file)}#view=FitH" title="Resume preview"></iframe>
+                <p class="resume-preview-note">Preview not showing? <a href="${escapeHtml(resume.file)}" target="_blank" rel="noopener">Open the PDF</a> instead.</p>`;
+        }
+        preview.hidden = !open;
+        btn.setAttribute('aria-expanded', open);
+        btn.querySelector('span').textContent = open ? 'Hide preview' : 'Preview';
+        if (open) preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
 }
 
