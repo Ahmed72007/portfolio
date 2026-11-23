@@ -52,6 +52,93 @@
       ]
     }
   ],
+  "projects": [
+    {
+      "name": "MARSWALK",
+      "tagline": "Interplanetary survival guide for the first people on Mars",
+      "category": "Science & Games",
+      "icon": "fas fa-user-astronaut",
+      "url": "https://martianmap-marswalk.vercel.app",
+      "accent": ["#e2683c", "#2f8f7f"],
+      "badge": "NASA Space Apps 2026",
+      "summary": "A NASA Space Apps 2026 (Challenge #10) entry: a traverse planner for Jezero Crater built on real NASA and USGS data, paired with a Mars field-operations simulation game.",
+      "features": [
+        "Six data layers: CTX imagery, 20 m DEM and slope, THEMIS, CRISM and USGS geology",
+        "Plans multi-stop science routes that avoid slopes above 15°, with instant re-routing",
+        "Visor HUD, 3D astronaut view and an EVA time budget",
+        "Companion game: pick a landing site and explore on foot, managing oxygen and battery"
+      ],
+      "tech": ["JavaScript", "HTML", "CSS", "NASA Mars Trek", "USGS data"]
+    },
+    {
+      "name": "Site Builder",
+      "tagline": "No-code website builder with live preview and versioned publishing",
+      "category": "Web Apps",
+      "icon": "fas fa-pen-ruler",
+      "url": "https://websitebuilder-psi-sand.vercel.app",
+      "accent": ["#8b5cf6", "#06b6d4"],
+      "badge": "Full-stack",
+      "summary": "A full-stack website builder: create sites from templates, edit pages section by section, preview on desktop, tablet and mobile, and publish versions you can roll back.",
+      "features": [
+        "Page and section editor with drag-to-reorder, undo/redo and autosave",
+        "Theme engine with presets, fonts and automatic colour-contrast warnings",
+        "One-click publishing with version history and restore",
+        "Custom domains, team roles and built-in form submissions"
+      ],
+      "tech": ["JavaScript", "Node.js", "REST API", "Auth"]
+    },
+    {
+      "name": "GUtech Learn",
+      "tagline": "Learning portal for GUtech students",
+      "category": "Education",
+      "icon": "fas fa-graduation-cap",
+      "url": "https://gutech-lms-omega.vercel.app",
+      "accent": ["#6366f1", "#0ea5e9"],
+      "badge": "LMS",
+      "summary": "A learning management system for GUtech: one place for courses and study material, designed to work well on phones and laptops.",
+      "features": [
+        "Course and learning-material portal for students",
+        "Light and dark themes that remember your choice",
+        "Responsive layout for mobile and desktop",
+        "Fast single-page app built with React and Vite"
+      ],
+      "tech": ["React", "Vite", "JavaScript", "CSS"]
+    },
+    {
+      "name": "Hospital Guide",
+      "tagline": "Installable hospital guide app for patients and visitors",
+      "category": "Health",
+      "icon": "fas fa-hospital",
+      "url": "https://hospitalapp-seven.vercel.app",
+      "accent": ["#0f766e", "#14b8a6"],
+      "badge": "PWA",
+      "summary": "A mobile-first hospital guide built as a Progressive Web App, so it can be installed on a phone's home screen and opened like a native app.",
+      "features": [
+        "Installable Progressive Web App with its own icon",
+        "Opens full-screen like a native mobile app",
+        "Mobile-first design",
+        "Built with React and Vite"
+      ],
+      "tech": ["React", "Vite", "PWA", "JavaScript"]
+    },
+    {
+      "name": "Al-Shams Youth Circle",
+      "tagline": "Faith • Fitness • Fellowship for Muslim youth in Karachi",
+      "category": "Community",
+      "icon": "fas fa-people-group",
+      "url": "https://ayc-steel.vercel.app",
+      "accent": ["#059669", "#10b981"],
+      "badge": "Next.js",
+      "summary": "The website of Al-Shams Youth Circle, a Karachi youth movement built around sports, inspiring talks and community. I serve as Programs Lead.",
+      "features": [
+        "Upcoming-events carousel with online registration",
+        "Activities, core team and testimonials sections",
+        "Our Story page",
+        "Responsive design with Tailwind CSS and optimised images"
+      ],
+      "tech": ["Next.js", "React", "Tailwind CSS"]
+    }
+  ],
   "certificates": [
     {
       "name": "CS50's Introduction to Artificial Intelligence with Python",

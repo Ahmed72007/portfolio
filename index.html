@@ -34,6 +34,7 @@
             <ul class="nav-links" id="nav-links">
                 <li><a href="#about" data-nav="about">About</a></li>
                 <li><a href="#skills" data-nav="skills">Skills</a></li>
+                <li><a href="#projects" data-nav="projects">Projects</a></li>
                 <li><a href="#education" data-nav="education">Education</a></li>
                 <li><a href="#certificates" data-nav="certificates">Certificates</a></li>
                 <li><a href="#languages" data-nav="languages">Languages</a></li>
@@ -94,6 +95,34 @@
                 </div>
             </div>
         </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section reveal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag"><i class="fas fa-rocket"></i> Live Work</span>
+                    <h2 class="section-title">Projects</h2>
+                    <div class="section-line"></div>
+                    <p class="projects-intro">Everything here is live on the web. Filter by type, hover to explore, and open a card for details or a live preview.</p>
+                </div>
+                <div class="projects-toolbar">
+                    <div class="project-filters" id="project-filters" role="group" aria-label="Filter projects"></div>
+                    <label class="project-search">
+                        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="search" id="project-search" placeholder="Search projects or tech…" aria-label="Search projects">
+                    </label>
+                </div>
+                <div id="projects-grid" class="projects-grid">
+                    <!-- Dynamically rendered -->
+                </div>
+                <p class="projects-empty" id="projects-empty" hidden>No projects match that search.</p>
+            </div>
+        </section>
+
+        <!-- Project details dialog -->
+        <dialog class="project-modal" id="project-modal" aria-labelledby="pm-title">
+            <div class="pm-inner" id="pm-inner"></div>
+        </dialog>
 
         <!-- Education Section -->
         <section id="education" class="section reveal">

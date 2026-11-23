@@ -58,6 +58,93 @@ const PROFILE_DATA = {
       ]
     }
   ],
+  "projects": [
+    {
+      "name": "MARSWALK",
+      "tagline": "Interplanetary survival guide for the first people on Mars",
+      "category": "Science & Games",
+      "icon": "fas fa-user-astronaut",
+      "url": "https://martianmap-marswalk.vercel.app",
+      "accent": ["#e2683c", "#2f8f7f"],
+      "badge": "NASA Space Apps 2026",
+      "summary": "A NASA Space Apps 2026 (Challenge #10) entry: a traverse planner for Jezero Crater built on real NASA and USGS data, paired with a Mars field-operations simulation game.",
+      "features": [
+        "Six data layers: CTX imagery, 20 m DEM and slope, THEMIS, CRISM and USGS geology",
+        "Plans multi-stop science routes that avoid slopes above 15°, with instant re-routing",
+        "Visor HUD, 3D astronaut view and an EVA time budget",
+        "Companion game: pick a landing site and explore on foot, managing oxygen and battery"
+      ],
+      "tech": ["JavaScript", "HTML", "CSS", "NASA Mars Trek", "USGS data"]
+    },
+    {
+      "name": "Site Builder",
+      "tagline": "No-code website builder with live preview and versioned publishing",
+      "category": "Web Apps",
+      "icon": "fas fa-pen-ruler",
+      "url": "https://websitebuilder-psi-sand.vercel.app",
+      "accent": ["#8b5cf6", "#06b6d4"],
+      "badge": "Full-stack",
+      "summary": "A full-stack website builder: create sites from templates, edit pages section by section, preview on desktop, tablet and mobile, and publish versions you can roll back.",
+      "features": [
+        "Page and section editor with drag-to-reorder, undo/redo and autosave",
+        "Theme engine with presets, fonts and automatic colour-contrast warnings",
+        "One-click publishing with version history and restore",
+        "Custom domains, team roles and built-in form submissions"
+      ],
+      "tech": ["JavaScript", "Node.js", "REST API", "Auth"]
+    },
+    {
+      "name": "GUtech Learn",
+      "tagline": "Learning portal for GUtech students",
+      "category": "Education",
+      "icon": "fas fa-graduation-cap",
+      "url": "https://gutech-lms-omega.vercel.app",
+      "accent": ["#6366f1", "#0ea5e9"],
+      "badge": "LMS",
+      "summary": "A learning management system for GUtech: one place for courses and study material, designed to work well on phones and laptops.",
+      "features": [
+        "Course and learning-material portal for students",
+        "Light and dark themes that remember your choice",
+        "Responsive layout for mobile and desktop",
+        "Fast single-page app built with React and Vite"
+      ],
+      "tech": ["React", "Vite", "JavaScript", "CSS"]
+    },
+    {
+      "name": "Hospital Guide",
+      "tagline": "Installable hospital guide app for patients and visitors",
+      "category": "Health",
+      "icon": "fas fa-hospital",
+      "url": "https://hospitalapp-seven.vercel.app",
+      "accent": ["#0f766e", "#14b8a6"],
+      "badge": "PWA",
+      "summary": "A mobile-first hospital guide built as a Progressive Web App, so it can be installed on a phone's home screen and opened like a native app.",
+      "features": [
+        "Installable Progressive Web App with its own icon",
+        "Opens full-screen like a native mobile app",
+        "Mobile-first design",
+        "Built with React and Vite"
+      ],
+      "tech": ["React", "Vite", "PWA", "JavaScript"]
+    },
+    {
+      "name": "Al-Shams Youth Circle",
+      "tagline": "Faith • Fitness • Fellowship for Muslim youth in Karachi",
+      "category": "Community",
+      "icon": "fas fa-people-group",
+      "url": "https://ayc-steel.vercel.app",
+      "accent": ["#059669", "#10b981"],
+      "badge": "Next.js",
+      "summary": "The website of Al-Shams Youth Circle, a Karachi youth movement built around sports, inspiring talks and community. I serve as Programs Lead.",
+      "features": [
+        "Upcoming-events carousel with online registration",
+        "Activities, core team and testimonials sections",
+        "Our Story page",
+        "Responsive design with Tailwind CSS and optimised images"
+      ],
+      "tech": ["Next.js", "React", "Tailwind CSS"]
+    }
+  ],
   "certificates": [
     {
       "name": "CS50's Introduction to Artificial Intelligence with Python",
@@ -129,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHero(data.basics);
     renderAbout(data.about, data.basics);
     renderSkills(data.skills);
+    renderProjects(data.projects);
     renderEducation(data.education);
     renderCertificates(data.certificates);
     renderLanguages(data.languages);
@@ -462,6 +550,215 @@ function renderSkills(skills) {
     }).join('');
 
     skillsGrid.classList.add('stagger-in');
+}
+
+
+/* ═══════════════════════════════════════════════
+   RENDER: PROJECTS
+   ═══════════════════════════════════════════════ */
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Live screenshot of the deployed site (WordPress mShots, free, no key). If it
+// fails to load, the card falls back to a gradient cover with the project icon.
+const projectShot = (url, w = 1200) => `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=${w}&h=${Math.round(w * 0.625)}`;
+const projectHost = (url) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+function projectCover(p, w) {
+    const [a, b] = p.accent || ['#8b5cf6', '#06b6d4'];
+    return `
+        <div class="project-cover" style="--pa:${a};--pb:${b}">
+            <div class="project-cover-fallback" aria-hidden="true"><i class="${escapeHtml(p.icon)}"></i></div>
+            <img data-shot="${projectShot(p.url, w)}" alt="Screenshot of ${escapeHtml(p.name)}" loading="lazy" decoding="async">
+        </div>`;
+}
+
+// mShots returns a small "generating" placeholder the first time a page is
+// requested, so retry a few times before settling on the gradient fallback.
+function wireShots(root) {
+    root.querySelectorAll('img[data-shot]').forEach(img => {
+        let tries = 0;
+        img.addEventListener('load', () => {
+            if (img.naturalWidth >= 500) return img.classList.add('loaded');
+            if (++tries > 4) return img.remove();
+            setTimeout(() => { img.src = `${img.dataset.shot}&r=${tries}`; }, 2500 * tries);
+        });
+        img.addEventListener('error', () => img.remove());
+        img.src = img.dataset.shot;
+    });
+}
+
+function renderProjects(projects) {
+    const section = document.getElementById('projects');
+    const grid = document.getElementById('projects-grid');
+    const filtersEl = document.getElementById('project-filters');
+    const searchEl = document.getElementById('project-search');
+    const emptyEl = document.getElementById('projects-empty');
+    const modal = document.getElementById('project-modal');
+    const modalInner = document.getElementById('pm-inner');
+
+    if (!projects || !projects.length) {
+        if (section) section.style.display = 'none';
+        return;
+    }
+
+    // ── Cards ──
+    grid.innerHTML = projects.map((p, i) => `
+        <article class="project-card" data-index="${i}" data-category="${escapeHtml(p.category)}"
+                 data-search="${escapeHtml([p.name, p.tagline, p.category, p.summary, ...(p.tech || [])].join(' ').toLowerCase())}">
+            <button class="project-open" data-open="${i}" aria-label="Show details for ${escapeHtml(p.name)}">
+                ${projectCover(p, 800)}
+                <span class="project-live"><span class="live-dot"></span> Live</span>
+                <span class="project-view"><i class="fas fa-expand"></i> Details</span>
+            </button>
+            <div class="project-body">
+                <div class="project-meta">
+                    <span class="project-category"><i class="${escapeHtml(p.icon)}"></i> ${escapeHtml(p.category)}</span>
+                    ${p.badge ? `<span class="project-badge">${escapeHtml(p.badge)}</span>` : ''}
+                </div>
+                <h3 class="project-name">${escapeHtml(p.name)}</h3>
+                <p class="project-tagline">${escapeHtml(p.tagline)}</p>
+                <div class="project-tech">${(p.tech || []).map(t => `<span>${escapeHtml(t)}</span>`).join('')}</div>
+                <div class="project-actions">
+                    <a class="project-btn primary" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">
+                        <i class="fas fa-arrow-up-right-from-square"></i> Visit site
+                    </a>
+                    <button class="project-btn" data-open="${i}"><i class="fas fa-circle-info"></i> Details</button>
+                </div>
+            </div>
+        </article>
+    `).join('');
+    grid.classList.add('stagger-in');
+    wireShots(grid);
+
+    // ── Filters + search ──
+    const categories = ['All', ...new Set(projects.map(p => p.category))];
+    let activeCat = 'All';
+    filtersEl.innerHTML = categories.map(c => {
+        const count = c === 'All' ? projects.length : projects.filter(p => p.category === c).length;
+        return `<button class="project-filter${c === 'All' ? ' active' : ''}" data-cat="${escapeHtml(c)}" aria-pressed="${c === 'All'}">
+            ${escapeHtml(c)} <span>${count}</span></button>`;
+    }).join('');
+
+    const applyFilters = () => {
+        const q = searchEl.value.trim().toLowerCase();
+        let shown = 0;
+        grid.querySelectorAll('.project-card').forEach(card => {
+            const ok = (activeCat === 'All' || card.dataset.category === activeCat) && (!q || card.dataset.search.includes(q));
+            card.classList.toggle('is-hidden', !ok);
+            if (ok) shown++;
+        });
+        emptyEl.hidden = shown > 0;
+    };
+
+    filtersEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.project-filter');
+        if (!btn) return;
+        activeCat = btn.dataset.cat;
+        filtersEl.querySelectorAll('.project-filter').forEach(b => {
+            const on = b === btn;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-pressed', on);
+        });
+        applyFilters();
+    });
+    searchEl.addEventListener('input', applyFilters);
+
+    // ── Tilt + cursor spotlight (pointer devices only) ──
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (canHover && !reduceMotion) {
+        grid.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('pointermove', (e) => {
+                const r = card.getBoundingClientRect();
+                const x = (e.clientX - r.left) / r.width;
+                const y = (e.clientY - r.top) / r.height;
+                card.style.setProperty('--mx', `${x * 100}%`);
+                card.style.setProperty('--my', `${y * 100}%`);
+                card.style.setProperty('--rx', `${(0.5 - y) * 6}deg`);
+                card.style.setProperty('--ry', `${(x - 0.5) * 6}deg`);
+            });
+            card.addEventListener('pointerleave', () => {
+                card.style.setProperty('--rx', '0deg');
+                card.style.setProperty('--ry', '0deg');
+            });
+        });
+    }
+
+    // ── Details dialog ──
+    let current = 0;
+    const openProject = (i) => {
+        current = (i + projects.length) % projects.length;
+        const p = projects[current];
+        modalInner.innerHTML = `
+            <button class="pm-close" data-close aria-label="Close"><i class="fas fa-xmark"></i></button>
+            <div class="pm-media" id="pm-media">
+                ${projectCover(p, 1200)}
+            </div>
+            <div class="pm-content">
+                <div class="project-meta">
+                    <span class="project-category"><i class="${escapeHtml(p.icon)}"></i> ${escapeHtml(p.category)}</span>
+                    ${p.badge ? `<span class="project-badge">${escapeHtml(p.badge)}</span>` : ''}
+                    <span class="project-live inline"><span class="live-dot"></span> Live</span>
+                </div>
+                <h3 class="pm-title" id="pm-title">${escapeHtml(p.name)}</h3>
+                <p class="pm-summary">${escapeHtml(p.summary)}</p>
+                <h4 class="pm-sub">Highlights</h4>
+                <ul class="pm-features">${(p.features || []).map(f => `<li><i class="fas fa-check"></i> ${escapeHtml(f)}</li>`).join('')}</ul>
+                <h4 class="pm-sub">Built with</h4>
+                <div class="project-tech">${(p.tech || []).map(t => `<span>${escapeHtml(t)}</span>`).join('')}</div>
+                <div class="pm-actions">
+                    <a class="btn btn-primary" href="${escapeHtml(p.url)}" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Open live site</a>
+                    <button class="btn btn-ghost" data-preview><i class="fas fa-desktop"></i> Live preview</button>
+                </div>
+                <a class="pm-link" href="${escapeHtml(p.url)}" target="_blank" rel="noopener"><i class="fas fa-link"></i> ${escapeHtml(projectHost(p.url))}</a>
+                <div class="pm-nav">
+                    <button data-step="-1" aria-label="Previous project"><i class="fas fa-arrow-left"></i> Prev</button>
+                    <span>${current + 1} / ${projects.length}</span>
+                    <button data-step="1" aria-label="Next project">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>`;
+        wireShots(modalInner);
+        if (!modal.open) {
+            modal.showModal();
+            document.body.style.overflow = 'hidden';
+        }
+        modalInner.scrollTop = 0;
+    };
+
+    const showPreview = () => {
+        const p = projects[current];
+        const media = document.getElementById('pm-media');
+        media.classList.add('is-preview');
+        media.innerHTML = `
+            <div class="pm-browser">
+                <span class="dots"><i></i><i></i><i></i></span>
+                <span class="addr">${escapeHtml(projectHost(p.url))}</span>
+            </div>
+            <iframe src="${escapeHtml(p.url)}" title="Live preview of ${escapeHtml(p.name)}" loading="lazy"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>`;
+        const btn = modalInner.querySelector('[data-preview]');
+        if (btn) btn.remove();
+    };
+
+    grid.addEventListener('click', (e) => {
+        const opener = e.target.closest('[data-open]');
+        if (opener) openProject(Number(opener.dataset.open));
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.closest('[data-close]')) return modal.close();
+        const step = e.target.closest('[data-step]');
+        if (step) return openProject(current + Number(step.dataset.step));
+        if (e.target.closest('[data-preview]')) showPreview();
+    });
+    modal.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') openProject(current + 1);
+        else if (e.key === 'ArrowLeft') openProject(current - 1);
+    });
+    modal.addEventListener('close', () => {
+        document.body.style.overflow = '';
+        modalInner.innerHTML = '';
+    });
 }
 
 
